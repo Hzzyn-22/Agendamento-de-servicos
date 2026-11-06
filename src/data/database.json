@@ -1,4 +1,20 @@
 {
-  "clientes": [],
-  "agendamentos": []
+  "clientes": [
+    {
+      "id": 1,
+      "nome": "Luis Henrique",
+      "email": "luis.teste@email.com",
+      "telefone": "11999999999"
+    }
+  ],
+  "agendamentos": [
+    {
+      "id": 1,
+      "clienteId": 1,
+      "servico": "Corte de cabelo",
+      "data": "2026-11-10",
+      "horario": "14:00",
+      "status": "pendente"
+    }
+  ]
 }
