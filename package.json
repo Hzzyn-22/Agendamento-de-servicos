@@ -1,8 +1,12 @@
 {
-  "dependencies": {
-    "express": "^5.3.0"
-  },
+  "name": "agendamento-de-servicos",
+  "version": "1.0.0",
+  "description": "API RESTful de Agendamento de Serviços",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
