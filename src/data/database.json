@@ -5,6 +5,18 @@
       "nome": "Luis Henrique",
       "email": "luis.teste@email.com",
       "telefone": "11999999999"
+    },
+    {
+      "id": 2,
+      "nome": "Henzo Marcos",
+      "email": "henzo.marcos@teste.com",
+      "telefone": ""
+    },
+    {
+      "id": 3,
+      "nome": "Jean Lucas",
+      "email": "jean.lucas@teste.com",
+      "telefone": ""
     }
   ],
   "agendamentos": [
@@ -14,6 +26,22 @@
       "servico": "Corte de cabelo",
       "data": "2026-11-10",
       "horario": "14:00",
+      "status": "pendente"
+    },
+    {
+      "id": 2,
+      "clienteId": 2,
+      "servico": "Corte de cabelo",
+      "data": "2026-11-10",
+      "horario": "15:00",
+      "status": "pendente"
+    },
+    {
+      "id": 3,
+      "clienteId": 3,
+      "servico": "Corte de cabelo",
+      "data": "2026-11-10",
+      "horario": "16:00",
       "status": "pendente"
     }
   ]
