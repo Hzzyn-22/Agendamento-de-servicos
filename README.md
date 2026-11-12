@@ -1,91 +1,125 @@
-# Sistema de Agendamento de Serviços - API RESTful
+# 📅 Sistema de Agendamento de Serviços — API RESTful
 
-API RESTful desenvolvida em **Node.js** com **Express** para a gestão integrada de clientes e agendamentos de serviços. Projeto desenvolvido como Projeto Integrador para a disciplina de **Programação Back-End 1** do **SENAI Mauá - Jairo Cândido**.
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.1.0-000000?style=for-the-badge&logo=express&logoColor=white)
+![Persistência](https://img.shields.io/badge/Persistência-JSON%20Storage-F7DF1E?style=for-the-badge&logo=json&logoColor=black)
+![Shell Script](https://img.shields.io/badge/Testes%20%26%20CLI-Bash%20%7C%20cURL%20%7C%20jq-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
+![Instituição](https://img.shields.io/badge/SENAI%20Mauá-Jairo%20Cândido-E30613?style=for-the-badge)
 
----
+API RESTful desenvolvida em **Node.js** com **Express 5** para o gerenciamento integrado de clientes e agendamentos de serviços, acompanhada de **painel interativo no terminal**, **menu de validação de códigos HTTP** e **suíte automatizada de testes em Shell Script**.
 
-## Sumário
-
-- [Visão Geral](#visão-geral)
-- [Recursos Principais](#recursos-principais)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Instalação e Execução](#instalação-e-execução)
-- [Documentação da API](#documentação-da-api)
-  - [Endpoints de Clientes](#endpoints-de-clientes-clientes)
-  - [Endpoints de Agendamentos](#endpoints-de-agendamentos-agendamentos)
-- [Filtros por Query Parameters](#filtros-por-query-parameters)
-- [Automação de Testes e Auditoria](#automação-de-testes-e-auditoria)
-- [Gerenciamento de Processos no Linux](#gerenciamento-de-processos-no-linux)
-- [Autores e Créditos](#autores-e-créditos)
+Projeto Integrador desenvolvido para a disciplina de **Programação Back-End 1** do curso Técnico em Desenvolvimento de Sistemas — **SENAI Mauá - Jairo Cândido**.
 
 ---
 
-## Visão Geral
+## 📑 Sumário
 
-O sistema provê uma solução completa para cadastramento de clientes e agendamento de atendimentos. A aplicação segue o padrão arquitetural RESTful, operando na porta `3016` com persistência em memória e validação completa de dados de entrada.
+- [Visão Geral](#-visão-geral)
+- [Recursos Principais](#-recursos-principais)
+- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Instalação e Execução](#-instalação-e-execução)
+- [Aba de Testes, Validação de Erros HTTP e Painel Interativo](#-aba-de-testes-validação-de-erros-http-e-painel-interativo)
+  - [Painel Interativo (`testar`)](#1-painel-interativo-de-gestão-testar)
+  - [Validação de Status e Erros HTTP (`erros`)](#2-menu-de-validação-de-status-e-erros-http-erros)
+  - [Suíte Automatizada e Auditoria](#3-suíte-de-testes-automatizados-e-auditoria)
+  - [Relatório Formatado de Agendamentos](#4-consulta-formatada-de-agendamentos)
+  - [Configuração dos Atalhos `testar` e `erros`](#5-como-ativar-os-atalhos-testar-e-erros-no-terminal)
+- [Documentação da API](#-documentação-da-api)
+  - [Health Check (`/`)](#health-check-)
+  - [Endpoints de Clientes (`/clientes`)](#endpoints-de-clientes-clientes)
+  - [Endpoints de Agendamentos (`/agendamentos`)](#endpoints-de-agendamentos-agendamentos)
+  - [Filtros por Query Parameters](#filtros-por-query-parameters)
+  - [Códigos de Status HTTP](#códigos-de-status-http)
+- [Gerenciamento de Processos no Linux](#-gerenciamento-de-processos-no-linux)
+- [Autores e Créditos](#-autores-e-créditos)
 
 ---
 
-## Recursos Principais
+## 🎯 Visão Geral
 
-- **CRUD Completo:** Operações de criação, leitura, atualização (total e parcial) e exclusão para as entidades `Clientes` e `Agendamentos`.
-- **Validação Estrutural de Dados:** Verificação rigorosa de campos obrigatórios, datas no formato `AAAA-MM-DD`, horários `HH:mm` e status (`PENDENTE`, `CONFIRMADO`, `CONCLUIDO`, `CANCELADO`).
-- **Filtros Flexíveis:** Suporte a filtros combinados ou individuais via *Query Parameters*.
-- **Padronização HTTP:** Devolução dos códigos de estado HTTP padronizados (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`).
-- **Automação de Testes:** Script executável em Shell Script com `cURL` e `jq` para testes funcionais e geração de arquivo de log de auditoria.
+O sistema oferece uma solução back-end completa para cadastro de clientes, controle de agendamentos, atualização de status e consultas filtradas. A aplicação segue os princípios da arquitetura **RESTful**, opera por padrão na porta `3016` e utiliza **persistência local em arquivo JSON** (`src/data/database.json`), mantendo os registros salvos entre reinicializações do servidor.
 
 ---
 
-## Tecnologias Utilizadas
+## ✨ Recursos Principais
 
-- **Ambiente de Execução:** Node.js
-- **Framework Web:** Express
-- **Persistência de Dados:** Armazenamento em memória (In-memory storage)
-- **Automação e Testes:** Shell Script (Bash), cURL, jq
+- **CRUD Completo (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`):** Operações completas e parciais para `Clientes` e `Agendamentos`.
+- **Persistência em Arquivo JSON:** Leitura e gravação automática em `src/data/database.json` via módulo nativo `fs`.
+- **Validação Rigorosa e Integridade Referencial:**
+  - Obrigatoriedade e formato válido de e-mail, além de bloqueio de e-mails duplicados.
+  - Validação de datas no padrão `AAAA-MM-DD` e horários no formato `HH:mm` (24h).
+  - Bloqueio de agendamentos para clientes inexistentes e impedimento de exclusão de clientes que possuam agendamentos ativos.
+  - Controle de status permitidos: `pendente`, `confirmado`, `concluido` e `cancelado`.
+- **Filtros Dinâmicos via Query Parameters:** Consultas combinadas ou individuais por `nome`, `email`, `status`, `data` e `clienteId`.
+- **Painel Interativo CLI (`testar`):** Interface amigável no terminal para operar toda a API sem precisar digitar comandos `cURL` manualmente.
+- **Menu de Testes de Status e Erros HTTP (`erros`):** Ferramenta interativa para demonstrar respostas `200 OK`, `201 Created`, `400 Bad Request` e `404 Not Found` em tempo real.
+- **Automação Completa em Bash:** Scripts para iniciar/parar a API em segundo plano (`daemon`), executar bateria de testes e gerar logs de auditoria.
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+- **Ambiente de Execução:** Node.js (v18+)
+- **Framework Web:** Express (`^5.1.0`)
+- **Persistência de Dados:** Arquivo JSON local (`fs` / `database.json`)
+- **Automação, CLI e Testes:** Shell Script (Bash), `cURL` e `jq`
 - **Ambiente Operacional de Referência:** Linux Debian
 - **Controle de Versão:** Git & GitHub
 
 ---
 
-## Estrutura do Projeto
+## 📂 Estrutura do Projeto
 
 ```plaintext
 Agendamento-de-servicos/
 ├── scripts/
-│   └── testes.sh             # Script em Bash para testes de integração
+│   ├── automacao.sh                # Controle da API em segundo plano (start | stop | status)
+│   ├── consultar_agendamentos.sh   # Relatório formatado de agendamentos no terminal
+│   ├── painel.sh                   # Painel interativo completo (atalho: testar)
+│   ├── testar-menu.sh              # Menu interativo de códigos HTTP e erros (atalho: erros)
+│   ├── testes.sh                   # Script de testes de integração
+│   └── testes_automacao.sh         # Suíte completa de testes (inclui PUT e PATCH) com log
 ├── src/
 │   ├── controllers/
-│   │   ├── agendamentosController.js  # Lógica de negócio da entidade Agendamentos
-│   │   └── clientesController.js      # Lógica de negócio da entidade Clientes
+│   │   ├── agendamentosController.js  # Regras de negócio e validações de Agendamentos
+│   │   └── clientesController.js      # Regras de negócio e validações de Clientes
 │   ├── data/
-│   │   └── database.js               # Camada de persistência temporária em memória
+│   │   ├── database.js                # Módulo de leitura e escrita no arquivo JSON
+│   │   └── database.json              # Banco de dados local persistente
 │   └── routes/
-│       ├── agendamentos.js           # Roteamento dos endpoints de agendamentos
-│       └── clientes.js               # Roteamento dos endpoints de clientes
+│       ├── agendamentos.js            # Rotas REST de /agendamentos
+│       └── clientes.js                # Rotas REST de /clientes
 ├── .gitignore
+├── api.log                            # Log de saída do servidor em segundo plano
+├── api.pid                            # PID do processo ativo da API
 ├── package.json
 ├── package-lock.json
 ├── README.md
-├── resultado_execucao.log            # Log gerado pelo script de testes
-└── server.js                         # Inicialização do servidor HTTP (Porta 3016)
+├── resultado_execucao.log             # Relatório de auditoria gerado pelos testes
+└── server.js                          # Configuração do Express e inicialização (Porta 3016)
 ```
 
 ---
 
-## Instalação e Execução
+## 🚀 Instalação e Execução
 
 ### Pré-requisitos
 
-- **Node.js** (versão 16.x ou superior)
-- **NPM** (Gerenciador de pacotes do Node)
-- **Bash Terminal** (Linux, macOS ou Git Bash no Windows)
+- **Node.js** (versão 18.x ou superior) e **NPM**
+- **Bash Terminal** (Linux, macOS ou Git Bash)
+- **`curl` e `jq`** (necessários para o painel interativo e scripts de teste)
+
+Para instalar `curl` e `jq` no Linux Debian/Ubuntu:
+```bash
+sudo apt update && sudo apt install -y curl jq
+```
 
 ### Passo a Passo
 
 1. **Clonar o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/Agendamento-de-servicos.git
+   git clone [https://github.com/Hzzyn-22/Agendamento-de-servicos.git](https://github.com/Hzzyn-22/Agendamento-de-servicos.git)
    cd Agendamento-de-servicos
    ```
 
@@ -94,34 +128,149 @@ Agendamento-de-servicos/
    npm install
    ```
 
-3. **Iniciar o servidor:**
+3. **Conceder permissão de execução aos scripts:**
+   ```bash
+   chmod +x scripts/*.sh
+   ```
+
+4. **Iniciar o servidor:**
    ```bash
    npm start
    ```
+   *(Ou iniciar em segundo plano com `./scripts/automacao.sh start`)*
 
-> **Nota:** O servidor estará disponível no endereço `http://localhost:3016`.
+> **Nota:** A API ficará disponível em `http://localhost:3016`.
 
 ---
 
-## Documentação da API
+## 🧪 Aba de Testes, Validação de Erros HTTP e Painel Interativo
+
+O projeto conta com ferramentas dedicadas no terminal para demonstração, operação visual e validação automatizada de respostas e erros da API.
+
+### 1. Painel Interativo de Gestão (`testar`)
+
+Executa um painel visual completo no terminal (`scripts/painel.sh`) que **inicia a API automaticamente** caso esteja desligada e permite gerenciar clientes e agendamentos por meio de um menu numérico:
+
+```bash
+# Executando pelo atalho configurado
+testar
+
+# Ou executando diretamente pelo script
+./scripts/painel.sh
+```
+
+**Funcionalidades disponíveis no painel:**
+```text
+===============================
+   GESTÃO DE AGENDAMENTOS
+===============================
+1) Listar agendamentos
+2) Novo agendamento
+3) Editar agendamento
+4) Mudar status
+5) Excluir agendamento
+6) Listar clientes
+7) Cadastrar cliente
+8) Excluir cliente
+0) Sair
+===============================
+```
+
+---
+
+### 2. Menu de Validação de Status e Erros HTTP (`erros`)
+
+Executa um menu interativo (`scripts/testar-menu.sh`) projetado para testar individualmente ou em lote os principais retornos de sucesso e erro da API (`201 Created`, `200 OK`, `400 Bad Request` e `404 Not Found`), exibindo o comando `cURL`, o cabeçalho HTTP e o JSON formatado:
+
+```bash
+# Executando pelo atalho configurado
+erros
+
+# Ou executando diretamente pelo script
+./scripts/testar-menu.sh
+```
+
+**Cenários testados no menu:**
+```text
+====================================================
+       TESTE DOS REQUISITOS DO ITEM 1 (API)
+====================================================
+ 1) [201 Created]     Cadastrar (POST)
+ 2) [200 OK]          Query Params (?status=pendente)
+ 3) [200 OK]          Atualizar e Excluir (PATCH/DELETE)
+ 4) [400 Bad Request] Erro de validação de payload
+ 5) [404 Not Found]   Erro de ID não encontrado
+ 6) [TODOS]           Executar os 5 testes acima
+ 0) Sair
+====================================================
+```
+
+---
+
+### 3. Suíte de Testes Automatizados e Auditoria
+
+Roda todos os fluxos de CRUD, filtros e validações de erro de ponta a ponta, salvando o relatório detalhado (`APROVADO` / `REPROVADO`) em `resultado_execucao.log`:
+
+```bash
+./scripts/testes_automacao.sh
+```
+
+Para consultar o log gerado após a execução:
+```bash
+cat resultado_execucao.log
+```
+
+---
+
+### 4. Consulta Formatada de Agendamentos
+
+Exibe no terminal um relatório consolidado cruzando os dados de clientes e agendamentos ativos:
+
+```bash
+./scripts/consultar_agendamentos.sh
+```
+
+---
+
+### 5. Como ativar os atalhos `testar` e `erros` no terminal
+
+Caso clone o repositório em um novo ambiente Linux e queira utilizar os comandos curtos `testar` e `erros` diretamente no terminal, adicione os aliases ao seu `~/.bashrc`:
+
+```bash
+echo "alias testar='$(pwd)/scripts/painel.sh'" >> ~/.bashrc
+echo "alias erros='$(pwd)/scripts/testar-menu.sh'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+---
+
+## 📡 Documentação da API
+
+### Health Check (`/`)
+
+| Método | Endpoint | Descrição | Resposta HTTP |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/` | Verifica se a API está online e retorna a versão | `200 OK` |
+
+---
 
 ### Endpoints de Clientes (`/clientes`)
 
 | Método | Endpoint | Descrição | Resposta HTTP |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/clientes` | Retorna a lista de todos os clientes | `200 OK` |
-| `GET` | `/clientes/:id` | Retorna os dados de um cliente específico pelo ID | `200 OK` / `404 Not Found` |
-| `POST` | `/clientes` | Cadastra um novo cliente | `201 Created` / `400 Bad Request` |
-| `PUT` | `/clientes/:id` | Atualização completa dos dados de um cliente | `200 OK` / `400` / `404` |
-| `PATCH` | `/clientes/:id` | Atualização parcial dos dados de um cliente | `200 OK` / `400` / `404` |
-| `DELETE` | `/clientes/:id` | Remove um cliente do sistema | `200 OK` / `204` / `404` |
+| `GET` | `/clientes` | Lista todos os clientes (suporta `?nome=` e `?email=`) | `200 OK` |
+| `GET` | `/clientes/:id` | Busca um cliente específico pelo ID | `200 OK` / `404 Not Found` |
+| `POST` | `/clientes` | Cadastra um novo cliente (valida e-mail único) | `201 Created` / `400 Bad Request` |
+| `PUT` | `/clientes/:id` | Atualiza os dados de um cliente | `200 OK` / `400` / `404` |
+| `PATCH` | `/clientes/:id` | Atualiza parcialmente os dados de um cliente | `200 OK` / `400` / `404` |
+| `DELETE` | `/clientes/:id` | Remove um cliente (bloqueado se houver agendamentos) | `200 OK` / `400` / `404` |
 
-#### Exemplo de Payload - Cadastro de Cliente (`POST /clientes`)
+#### Exemplo de Payload — Cadastro de Cliente (`POST /clientes`)
 ```json
 {
   "nome": "João Silva",
-  "telefone": "(11) 98765-4321",
-  "email": "joao.silva@email.com"
+  "email": "joao.silva@email.com",
+  "telefone": "(11) 98765-4321"
 }
 ```
 
@@ -131,80 +280,85 @@ Agendamento-de-servicos/
 
 | Método | Endpoint | Descrição | Resposta HTTP |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/agendamentos` | Retorna a lista de agendamentos (suporta filtros) | `200 OK` |
-| `GET` | `/agendamentos/:id` | Retorna um agendamento específico pelo ID | `200 OK` / `404 Not Found` |
-| `POST` | `/agendamentos` | Cadastra um novo agendamento | `201 Created` / `400` / `404` |
-| `PUT` | `/agendamentos/:id` | Atualização completa de um agendamento | `200 OK` / `400` / `404` |
-| `PATCH` | `/agendamentos/:id` | Atualização parcial de um agendamento | `200 OK` / `400` / `404` |
-| `DELETE` | `/agendamentos/:id` | Remove/Cancela um agendamento | `200 OK` / `204` / `404` |
+| `GET` | `/agendamentos` | Lista agendamentos (suporta filtros por query params) | `200 OK` / `400 Bad Request` |
+| `GET` | `/agendamentos/:id` | Busca um agendamento específico pelo ID | `200 OK` / `404 Not Found` |
+| `POST` | `/agendamentos` | Cria um novo agendamento (status inicial: `pendente`) | `201 Created` / `400 Bad Request` |
+| `PUT` | `/agendamentos/:id` | Atualiza os dados ou status de um agendamento | `200 OK` / `400` / `404` |
+| `PATCH` | `/agendamentos/:id` | Atualiza parcialmente um agendamento (ex.: status/horário) | `200 OK` / `400` / `404` |
+| `DELETE` | `/agendamentos/:id` | Exclui um agendamento do sistema | `200 OK` / `404 Not Found` |
 
-#### Exemplo de Payload - Cadastro de Agendamento (`POST /agendamentos`)
+#### Exemplo de Payload — Cadastro de Agendamento (`POST /agendamentos`)
 ```json
 {
   "clienteId": 1,
-  "servico": "Manutenção Preventiva",
+  "servico": "Corte de cabelo",
   "data": "2026-11-10",
-  "horario": "14:30",
-  "status": "PENDENTE"
+  "horario": "14:30"
+}
+```
+
+#### Exemplo de Payload — Atualização de Status (`PATCH /agendamentos/:id`)
+```json
+{
+  "status": "confirmado"
 }
 ```
 
 ---
 
-## Filtros por Query Parameters
+### Filtros por Query Parameters
 
-O endpoint `GET /agendamentos` permite filtrar registros dinamicamente:
-
-- **Por Status:** `GET /agendamentos?status=CONFIRMADO`
-- **Por Data:** `GET /agendamentos?data=2026-11-10`
-- **Por Cliente:** `GET /agendamentos?clienteId=1`
-- **Filtro Combinado:** `GET /agendamentos?status=PENDENTE&data=2026-11-10`
-
----
-
-## Automação de Testes e Auditoria
-
-O projeto conta com um script automatizado que realiza testes de integração em todos os endpoints e grava o resultado num arquivo de log.
-
-1. **Conceder permissão de execução ao script:**
-   ```bash
-   chmod +x scripts/testes.sh
-   ```
-
-2. **Executar a suíte de testes e gerar log:**
-   ```bash
-   ./scripts/testes.sh > resultado_execucao.log 2>&1
-   ```
-
-3. **Visualizar o resultado:**
-   ```bash
-   cat resultado_execucao.log
-   ```
+- **Clientes por Nome:** `GET /clientes?nome=Luis`
+- **Clientes por E-mail:** `GET /clientes?email=luis.teste@email.com`
+- **Agendamentos por Status:** `GET /agendamentos?status=pendente`
+- **Agendamentos por Data:** `GET /agendamentos?data=2026-11-10`
+- **Agendamentos por Cliente:** `GET /agendamentos?clienteId=1`
+- **Filtro Combinado:** `GET /agendamentos?status=pendente&data=2026-11-10`
 
 ---
 
-## Gerenciamento de Processos no Linux
+### Códigos de Status HTTP
 
-Comandos úteis para gerenciamento da aplicação em ambiente Linux Debian:
+| Código | Status | Significado na API |
+| :--- | :--- | :--- |
+| `200` | **OK** | Consulta, atualização (`PUT`/`PATCH`) ou exclusão (`DELETE`) concluída com sucesso |
+| `201` | **Created** | Novo cliente ou agendamento cadastrado com sucesso (`POST`) |
+| `204` | **No Content** | Requisição processada com sucesso sem corpo de resposta (padrão REST) |
+| `400` | **Bad Request** | Campos obrigatórios ausentes, formato inválido, JSON malformado, e-mail duplicado ou cliente com agendamentos vinculados |
+| `404` | **Not Found** | Cliente, agendamento ou rota não encontrada |
+| `500` | **Internal Server Error** | Falha inesperada no servidor |
 
-- **Localizar o PID do processo em execução:**
+---
+
+## ⚙️ Gerenciamento de Processos no Linux
+
+O projeto possui um script dedicado para controlar a execução da API em segundo plano no Linux Debian, gerenciando automaticamente os arquivos `api.pid` e `api.log`:
+
+- **Iniciar a API em segundo plano:**
   ```bash
-  ps aux | grep node
+  ./scripts/automacao.sh start
   ```
 
-- **Encerrar o processo de forma graciosa:**
+- **Verificar o status e o PID do processo:**
   ```bash
-  kill <PID>
+  ./scripts/automacao.sh status
   ```
 
-- **Forçar encerramento do processo:**
+- **Encerrar a API de forma graciosa:**
   ```bash
-  kill -9 <PID>
+  ./scripts/automacao.sh stop
+  ```
+
+- **Comandos manuais alternativos:**
+  ```bash
+  ps aux | grep node   # Localizar o PID manualmente
+  kill <PID>           # Encerramento gracioso
+  kill -9 <PID>        # Encerramento forçado
   ```
 
 ---
 
-## Autores e Créditos
+## 👥 Autores e Créditos
 
 Desenvolvido por:
 - **Henzo Marcos Caetano Lopes**
