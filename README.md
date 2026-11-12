@@ -332,4 +332,40 @@ source ~/.bashrc
 
 ## ⚙️ Gerenciamento de Processos no Linux
 
-O projeto possui um script dedicado para controlar a execução
+O projeto possui um script dedicado para controlar a execução da API em segundo plano no Linux Debian, gerenciando automaticamente os arquivos `api.pid` e `api.log`:
+
+- **Iniciar a API em segundo plano:**
+  ```bash
+  ./scripts/automacao.sh start
+  ```
+
+- **Verificar o status e o PID do processo:**
+  ```bash
+  ./scripts/automacao.sh status
+  ```
+
+- **Encerrar a API de forma graciosa:**
+  ```bash
+  ./scripts/automacao.sh stop
+  ```
+
+- **Comandos manuais alternativos:**
+  ```bash
+  ps aux | grep node   # Localizar o PID manualmente
+  kill <PID>           # Encerramento gracioso
+  kill -9 <PID>        # Encerramento forçado
+  ```
+
+---
+
+## 👥 Autores e Créditos
+
+Desenvolvido por:
+- **Henzo Marcos Caetano Lopes**
+- **Jean Lucas Martins Silva**
+- **Luis Henrique de Souza Torres**
+
+**Orientador:** Prof. Irineu Moura Caldeira  
+**Instituição:** SENAI Mauá - Jairo Cândido  
+**Curso:** Técnico em Desenvolvimento de Sistemas — Programação Back-End 1  
+**Ano:** 2026
