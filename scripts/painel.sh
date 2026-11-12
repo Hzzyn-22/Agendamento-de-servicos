@@ -33,6 +33,13 @@ novo_cliente() {
     curl -s -X POST "$BASE/clientes" -H "Content-Type: application/json" -d "$JSON" | jq .
 }
 
+excluir_cliente() {
+    listar_clientes
+    echo -e "\n--- EXCLUIR CLIENTE ---"
+    read -rp "ID do Cliente para excluir: " id
+    curl -s -X DELETE "$BASE/clientes/$id" | jq .
+}
+
 listar_agendamentos() {
     CLIENTES=$(curl -s "$BASE/clientes")
     AGENDAMENTOS=$(curl -s "$BASE/agendamentos")
@@ -117,6 +124,7 @@ while true; do
     echo "5) Excluir agendamento"
     echo "6) Listar clientes"
     echo "7) Cadastrar cliente"
+    echo "8) Excluir cliente"
     echo "0) Sair"
     echo "==============================="
     read -rp "Opção: " opcao
@@ -129,6 +137,7 @@ while true; do
         5) excluir_agendamento ;;
         6) listar_clientes ;;
         7) novo_cliente ;;
+        8) excluir_cliente ;;
         0) exit 0 ;;
         *) echo "Opção inválida." ;;
     esac

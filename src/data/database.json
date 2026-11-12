@@ -23,6 +23,18 @@
       "nome": "Arthur Bargas",
       "email": "arthur.b@ed.senai.br",
       "telefone": "1111111111"
+    },
+    {
+      "id": 5,
+      "nome": "Carlos Silva",
+      "email": "carlos@email.com",
+      "telefone": "11999998888"
+    },
+    {
+      "id": 6,
+      "nome": "Teste Apresentacao",
+      "email": "teste.1794503773@email.com",
+      "telefone": "11999999999"
     }
   ],
   "agendamentos": [
