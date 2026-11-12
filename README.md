@@ -20,11 +20,11 @@ Projeto Integrador desenvolvido para a disciplina de **Programação Back-End 1*
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Instalação e Execução](#-instalação-e-execução)
 - [Aba de Testes, Validação de Erros HTTP e Painel Interativo](#-aba-de-testes-validação-de-erros-http-e-painel-interativo)
-  - [Painel Interativo (`testar`)](#1-painel-interativo-de-gestão-testar)
+  - [Painel Interativo (`iniciar`)](#1-painel-interativo-de-gestão-iniciar)
   - [Validação de Status e Erros HTTP (`erros`)](#2-menu-de-validação-de-status-e-erros-http-erros)
   - [Suíte Automatizada e Auditoria](#3-suíte-de-testes-automatizados-e-auditoria)
   - [Relatório Formatado de Agendamentos](#4-consulta-formatada-de-agendamentos)
-  - [Configuração dos Atalhos `testar` e `erros`](#5-como-ativar-os-atalhos-testar-e-erros-no-terminal)
+  - [Configuração dos Atalhos `iniciar` e `erros`](#5-como-ativar-os-atalhos-iniciar-e-erros-no-terminal)
 - [Documentação da API](#-documentação-da-api)
   - [Health Check (`/`)](#health-check-)
   - [Endpoints de Clientes (`/clientes`)](#endpoints-de-clientes-clientes)
@@ -52,7 +52,7 @@ O sistema oferece uma solução back-end completa para cadastro de clientes, con
   - Bloqueio de agendamentos para clientes inexistentes e impedimento de exclusão de clientes que possuam agendamentos ativos.
   - Controle de status permitidos: `pendente`, `confirmado`, `concluido` e `cancelado`.
 - **Filtros Dinâmicos via Query Parameters:** Consultas combinadas ou individuais por `nome`, `email`, `status`, `data` e `clienteId`.
-- **Painel Interativo CLI (`testar`):** Interface amigável no terminal para operar toda a API sem precisar digitar comandos `cURL` manualmente.
+- **Painel Interativo CLI (`iniciar`):** Interface amigável no terminal para operar toda a API sem precisar digitar comandos `cURL` manualmente.
 - **Menu de Testes de Status e Erros HTTP (`erros`):** Ferramenta interativa para demonstrar respostas `200 OK`, `201 Created`, `400 Bad Request` e `404 Not Found` em tempo real.
 - **Automação Completa em Bash:** Scripts para iniciar/parar a API em segundo plano (`daemon`), executar bateria de testes e gerar logs de auditoria.
 
@@ -76,7 +76,7 @@ Agendamento-de-servicos/
 ├── scripts/
 │   ├── automacao.sh                # Controle da API em segundo plano (start | stop | status)
 │   ├── consultar_agendamentos.sh   # Relatório formatado de agendamentos no terminal
-│   ├── painel.sh                   # Painel interativo completo (atalho: testar)
+│   ├── painel.sh                   # Painel interativo completo (atalho: iniciar)
 │   ├── testar-menu.sh              # Menu interativo de códigos HTTP e erros (atalho: erros)
 │   ├── testes.sh                   # Script de testes de integração
 │   └── testes_automacao.sh         # Suíte completa de testes (inclui PUT e PATCH) com log
@@ -147,13 +147,13 @@ sudo apt update && sudo apt install -y curl jq
 
 O projeto conta com ferramentas dedicadas no terminal para demonstração, operação visual e validação automatizada de respostas e erros da API.
 
-### 1. Painel Interativo de Gestão (`testar`)
+### 1. Painel Interativo de Gestão (`iniciar`)
 
 Executa um painel visual completo no terminal (`scripts/painel.sh`) que **inicia a API automaticamente** caso esteja desligada e permite gerenciar clientes e agendamentos por meio de um menu numérico:
 
 ```bash
 # Executando pelo atalho configurado
-testar
+iniciar
 
 # Ou executando diretamente pelo script
 ./scripts/painel.sh
@@ -232,12 +232,12 @@ Exibe no terminal um relatório consolidado cruzando os dados de clientes e agen
 
 ---
 
-### 5. Como ativar os atalhos `testar` e `erros` no terminal
+### 5. Como ativar os atalhos `iniciar` e `erros` no terminal
 
-Caso clone o repositório em um novo ambiente Linux e queira utilizar os comandos curtos `testar` e `erros` diretamente no terminal, adicione os aliases ao seu `~/.bashrc`:
+Caso clone o repositório em um novo ambiente Linux e queira utilizar os comandos curtos `iniciar` e `erros` diretamente no terminal, adicione os aliases ao seu `~/.bashrc`:
 
 ```bash
-echo "alias testar='$(pwd)/scripts/painel.sh'" >> ~/.bashrc
+echo "alias iniciar='$(pwd)/scripts/painel.sh'" >> ~/.bashrc
 echo "alias erros='$(pwd)/scripts/testar-menu.sh'" >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -332,40 +332,4 @@ source ~/.bashrc
 
 ## ⚙️ Gerenciamento de Processos no Linux
 
-O projeto possui um script dedicado para controlar a execução da API em segundo plano no Linux Debian, gerenciando automaticamente os arquivos `api.pid` e `api.log`:
-
-- **Iniciar a API em segundo plano:**
-  ```bash
-  ./scripts/automacao.sh start
-  ```
-
-- **Verificar o status e o PID do processo:**
-  ```bash
-  ./scripts/automacao.sh status
-  ```
-
-- **Encerrar a API de forma graciosa:**
-  ```bash
-  ./scripts/automacao.sh stop
-  ```
-
-- **Comandos manuais alternativos:**
-  ```bash
-  ps aux | grep node   # Localizar o PID manualmente
-  kill <PID>           # Encerramento gracioso
-  kill -9 <PID>        # Encerramento forçado
-  ```
-
----
-
-## 👥 Autores e Créditos
-
-Desenvolvido por:
-- **Henzo Marcos Caetano Lopes**
-- **Jean Lucas Martins Silva**
-- **Luis Henrique de Souza Torres**
-
-**Orientador:** Prof. Irineu Moura Caldeira  
-**Instituição:** SENAI Mauá - Jairo Cândido  
-**Curso:** Técnico em Desenvolvimento de Sistemas — Programação Back-End 1  
-**Ano:** 2026
+O projeto possui um script dedicado para controlar a execução
