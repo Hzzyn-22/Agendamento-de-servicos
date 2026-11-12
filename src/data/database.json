@@ -17,6 +17,12 @@
       "nome": "Jean Lucas",
       "email": "jean.lucas@teste.com",
       "telefone": ""
+    },
+    {
+      "id": 4,
+      "nome": "Arthur Bargas",
+      "email": "arthur.b@ed.senai.br",
+      "telefone": "1111111111"
     }
   ],
   "agendamentos": [
@@ -26,7 +32,7 @@
       "servico": "Corte de cabelo",
       "data": "2026-11-10",
       "horario": "14:00",
-      "status": "pendente"
+      "status": "cancelado"
     },
     {
       "id": 2,
@@ -39,9 +45,25 @@
     {
       "id": 3,
       "clienteId": 3,
-      "servico": "Corte de cabelo",
-      "data": "2026-11-10",
-      "horario": "16:00",
+      "servico": "Sobrancelha",
+      "data": "2026-11-13",
+      "horario": "14:17",
+      "status": "pendente"
+    },
+    {
+      "id": 4,
+      "clienteId": 2,
+      "servico": "Pezinho",
+      "data": "2026-11-13",
+      "horario": "15:25",
+      "status": "pendente"
+    },
+    {
+      "id": 5,
+      "clienteId": 4,
+      "servico": "Barba",
+      "data": "2026-11-13",
+      "horario": "17:10",
       "status": "pendente"
     }
   ]
