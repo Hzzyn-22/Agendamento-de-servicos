@@ -1,0 +1,8 @@
+"ID","CLIENTE","SERVICO","DATA","STATUS"
+1,1,"Corte de cabelo","2026-11-10","cancelado"
+2,2,"Corte de cabelo","2026-11-10","pendente"
+3,3,"Sobrancelha","2026-11-13","concluido"
+4,2,"Pezinho","2026-11-13","pendente"
+5,4,"Barba","2026-11-13","concluido"
+6,5,"Corte de cabelo","2026-12-24","concluido"
+7,6,"Corte de Cabelo","2026-11-26","pendente"
