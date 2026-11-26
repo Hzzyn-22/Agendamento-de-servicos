@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgendaPro — Painel de Gestão</title>
+  <style>
+    :root {
+      --bg: #0b1120; --surface: #111827; --surface-2: #1e293b; --border: #273449;
+      --text: #f1f5f9; --muted: #94a3b8; --primary: #38bdf8; --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: radial-gradient(circle at top right, #172554 0%, var(--bg) 42%); color: var(--text); min-height: 100vh; padding: 28px 20px 60px; }
+    .container { max-width: 1120px; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .logo { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, #38bdf8, #6366f1); display: grid; place-items: center; font-weight: 800; font-size: 20px; }
+    .brand h1 { font-size: 22px; }
+    .brand p { font-size: 13px; color: var(--muted); }
+    .header-actions { display: flex; gap: 10px; }
+    .btn { padding: 10px 16px; border-radius: 10px; border: 1px solid transparent; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff; }
+    .btn-secondary { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: rgba(17,24,39,0.85); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+    .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+    .stat-value { font-size: 30px; font-weight: 700; margin-top: 6px; }
+    .panel { background: rgba(17,24,39,0.9); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .tabs { display: flex; gap: 6px; background: var(--bg); padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
+    .tab { padding: 8px 16px; border-radius: 8px; border: none; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; }
+    .tab.active { background: var(--surface-2); color: var(--text); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+    .toolbar input, .toolbar select { padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 13px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 13px 20px; font-size: 11px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+    td { padding: 14px 20px; border-bottom: 1px solid rgba(39,52,73,0.6); font-size: 14px; }
+    .badge { padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; text-transform: capitalize; }
+    .badge.pendente { background: rgba(234,179,8,0.16); color: #fde047; }
+    .badge.confirmado { background: rgba(34,197,94,0.16); color: #86efac; }
+    .badge.concluido { background: rgba(59,130,246,0.16); color: #93c5fd; }
+    .badge.cancelado { background: rgba(239,68,68,0.16); color: #fca5a5; }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .icon-btn { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; }
+    .icon-btn.ok { color: #86efac; border-color: rgba(34,197,94,0.35); }
+    .icon-btn.done { color: #93c5fd; border-color: rgba(59,130,246,0.35); }
+    .icon-btn.del { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
+    .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2,6,23,0.78); display: none; place-items: center; padding: 20px; z-index: 50; }
+    .modal-backdrop.open { display: grid; }
+    .modal { width: 100%; max-width: 440px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+    .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+    .field input, .field select { width: 100%; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    .toast-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 16px; border-radius: 10px; font-size: 14px; }
+    .toast.success { background: #052e16; border: 1px solid #166534; color: #bbf7d0; }
+    .toast.error { background: #450a0a; border: 1px solid #991b1b; color: #fecaca; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">AP</div>
+      <div><h1>AgendaPro</h1><p>Gestão de Clientes e Agendamentos</p></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="abrirModalCliente()">+ Novo Cliente</button>
+      <button class="btn btn-primary" onclick="abrirModalAgendamento()">+ Novo Agendamento</button>
+    </div>
+  </header>
+  <section class="stats">
+    <div class="stat-card"><div class="stat-label">Total Agendado</div><div class="stat-value" id="c-total">0</div></div>
+    <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-value" id="c-pend" style="color:#fde047">0</div></div>
+    <div class="stat-card"><div class="stat-label">Confirmados</div><div class="stat-value" id="c-conf" style="color:#86efac">0</div></div>
+    <div class="stat-card"><div class="stat-label">Clientes</div><div class="stat-value" id="c-cli" style="color:#a5b4fc">0</div></div>
+  </section>
+  <section class="panel">
+    <div class="panel-header">
+      <div class="tabs">
+        <button class="tab active" id="tab-agendamentos" onclick="trocarAba('agendamentos')">Agendamentos (<span id="badge-ag">0</span>)</button>
+        <button class="tab" id="tab-clientes" onclick="trocarAba('clientes')">Clientes (<span id="badge-cli">0</span>)</button>
+      </div>
+      <div class="toolbar">
+        <input id="busca" type="text" placeholder="Buscar..." oninput="renderizar()">
+        <select id="filtro-status" onchange="renderizar()">
+          <option value="">Todos os status</option>
+          <option value="pendente">Pendente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="concluido">Concluído</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div id="view-agendamentos" class="table-wrap">
+      <table><thead><tr><th>ID</th><th>Cliente</th><th>Serviço</th><th>Data / Hora</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tabela-agendamentos"></tbody></table>
+      <div id="empty-agendamentos" class="empty hidden">Nenhum agendamento encontrado.</div>
+    </div>
+    <div id="view-clientes" class="table-wrap hidden">
+      <table><thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Ações</th></tr></thead><tbody id="tabela-clientes"></tbody></table>
+      <div id="empty-clientes" class="empty hidden">Nenhum cliente cadastrado.</div>
+    </div>
+  </section>
+</div>
+<div class="modal-backdrop" id="modal-cliente" onclick="if(event.target===this)fecharModal('modal-cliente')">
+  <div class="modal">
+    <div class="modal-head"><h3>Novo Cliente</h3><button class="icon-btn" onclick="fecharModal('modal-cliente')">X</button></div>
+    <form onsubmit="salvarCliente(event)">
+      <div class="modal-body">
+        <div class="field"><label>Nome</label><input id="cli-nome" required></div>
+        <div class="field"><label>E-mail</label><input id="cli-email" type="email" required></div>
+        <div class="field"><label>Telefone</label><input id="cli-tel" required></div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn btn-secondary" onclick="fecharModal('modal-cliente')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div>
+    </form>
+  </div>
+</div>
+<div class="modal-backdrop" id="modal-agendamento" onclick="if(event.target===this)fecharModal('modal-agendamento')">
+  <div class="modal">
+    <div class="modal-head"><h3 id="titulo-modal-ag">Novo Agendamento</h3><button class="icon-btn" onclick="fecharModal('modal-agendamento')">X</button></div>
+    <form onsubmit="salvarAgendamento(event)">
+      <input type="hidden" id="ag-id">
+      <div class="modal-body">
+        <div class="field"><label>Cliente</label><select id="ag-cliente" required></select></div>
+        <div class="field"><label>Serviço</label><input id="ag-servico" required></div>
+        <div class="row-2">
+          <div class="field"><label>Data</label><input id="ag-data" type="date" required></div>
+          <div class="field"><label>Horário</label><input id="ag-hora" type="time" required></div>
+        </div>
+        <div class="field hidden" id="campo-status"><label>Status</label><select id="ag-status"><option value="pendente">Pendente</option><option value="confirmado">Confirmado</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option></select></div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn btn-secondary" onclick="fecharModal('modal-agendamento')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div>
+    </form>
+  </div>
+</div>
+<div class="toast-wrap" id="toasts"></div>
+<script>
+  let state = { clientes: [], agendamentos: [], aba: 'agendamentos' };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function toast(msg, tipo='success') {
+    const el = document.createElement('div'); el.className = 'toast ' + tipo; el.textContent = msg;
+    document.getElementById('toasts').appendChild(el); setTimeout(() => el.remove(), 3500);
+  }
+  function trocarAba(aba) {
+    state.aba = aba;
+    document.getElementById('tab-agendamentos').classList.toggle('active', aba === 'agendamentos');
+    document.getElementById('tab-clientes').classList.toggle('active', aba === 'clientes');
+    document.getElementById('view-agendamentos').classList.toggle('hidden', aba !== 'agendamentos');
+    document.getElementById('view-clientes').classList.toggle('hidden', aba !== 'clientes');
+    document.getElementById('filtro-status').classList.toggle('hidden', aba !== 'agendamentos');
+    renderizar();
+  }
+  function abrirModalCliente() {
+    ['cli-nome','cli-email','cli-tel'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('modal-cliente').classList.add('open');
+  }
+  function abrirModalAgendamento(ag = null) {
+    if (!state.clientes.length) { toast('Cadastre um cliente primeiro.', 'error'); return abrirModalCliente(); }
+    const sel = document.getElementById('ag-cliente');
+    sel.innerHTML = state.clientes.map(c => `<option value="${c.id}">${esc(c.nome)} (#${c.id})</option>`).join('');
+    document.getElementById('ag-id').value = ag ? ag.id : '';
+    document.getElementById('titulo-modal-ag').textContent = ag ? 'Editar Agendamento #' + ag.id : 'Novo Agendamento';
+    sel.value = ag ? ag.clienteId : state.clientes[0].id;
+    document.getElementById('ag-servico').value = ag ? ag.servico : '';
+    document.getElementById('ag-data').value = ag ? ag.data : new Date().toISOString().split('T')[0];
+    document.getElementById('ag-hora').value = ag ? ag.horario : '10:00';
+    document.getElementById('ag-status').value = ag ? ag.status : 'pendente';
+    document.getElementById('campo-status').classList.toggle('hidden', !ag);
+    document.getElementById('modal-agendamento').classList.add('open');
+  }
+  function fecharModal(id) { document.getElementById(id).classList.remove('open'); }
+  async function carregar() {
+    const [c, a] = await Promise.all([fetch('/clientes').then(r=>r.json()), fetch('/agendamentos').then(r=>r.json())]);
+    state.clientes = Array.isArray(c) ? c : []; state.agendamentos = Array.isArray(a) ? a : [];
+    document.getElementById('c-total').textContent = state.agendamentos.length;
+    document.getElementById('c-pend').textContent = state.agendamentos.filter(x => x.status === 'pendente').length;
+    document.getElementById('c-conf').textContent = state.agendamentos.filter(x => x.status === 'confirmado').length;
+    document.getElementById('c-cli').textContent = state.clientes.length;
+    document.getElementById('badge-ag').textContent = state.agendamentos.length;
+    document.getElementById('badge-cli').textContent = state.clientes.length;
+    renderizar();
+  }
+  function renderizar() {
+    const q = document.getElementById('busca').value.trim().toLowerCase();
+    const st = document.getElementById('filtro-status').value;
+    const mapa = Object.fromEntries(state.clientes.map(c => [c.id, c.nome]));
+    const ags = state.agendamentos.filter(a => (!st || a.status === st) && (!q || (mapa[a.clienteId]||'').toLowerCase().includes(q) || a.servico.toLowerCase().includes(q)));
+    document.getElementById('empty-agendamentos').classList.toggle('hidden', ags.length > 0);
+    document.getElementById('tabela-agendamentos').innerHTML = ags.map(a => `<tr><td>#${a.id}</td><td>${esc(mapa[a.clienteId]||'#'+a.clienteId)}</td><td>${esc(a.servico)}</td><td>${esc(a.data)} às ${esc(a.horario)}</td><td><span class="badge ${esc(a.status)}">${esc(a.status)}</span></td><td><div class="actions">${a.status==='pendente'?`<button class="icon-btn ok" onclick="mudarStatus(${a.id},'confirmado')">Confirmar</button>`:''}${a.status!=='concluido'&&a.status!=='cancelado'?`<button class="icon-btn done" onclick="mudarStatus(${a.id},'concluido')">Concluir</button>`:''}<button class="icon-btn" onclick="abrirModalAgendamento(state.agendamentos.find(x=>x.id===${a.id}))">Editar</button><button class="icon-btn del" onclick="excluirAg(${a.id})">Excluir</button></div></td></tr>`).join('');
+    const clis = state.clientes.filter(c => !q || (c.nome||'').toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q));
+    document.getElementById('empty-clientes').classList.toggle('hidden', clis.length > 0);
+    document.getElementById('tabela-clientes').innerHTML = clis.map(c => `<tr><td>#${c.id}</td><td>${esc(c.nome)}</td><td>${esc(c.email)}</td><td>${esc(c.telefone||'-')}</td><td><div class="actions"><button class="icon-btn ok" onclick="abrirModalAgendamento();document.getElementById('ag-cliente').value=${c.id}">+ Agendar</button><button class="icon-btn del" onclick="excluirCli(${c.id})">Excluir</button></div></td></tr>`).join('');
+  }
+  async function salvarCliente(e) {
+    e.preventDefault();
+    const res = await fetch('/clientes', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ nome: document.getElementById('cli-nome').value, email: document.getElementById('cli-email').value, telefone: document.getElementById('cli-tel').value }) });
+    const j = await res.json(); if (!res.ok) return toast(j.erro || 'Erro ao cadastrar.', 'error');
+    fecharModal('modal-cliente'); toast('Cliente cadastrado!'); carregar();
+  }
+  async function excluirCli(id) {
+    if (!confirm('Excluir cliente #' + id + '?')) return;
+    const res = await fetch('/clientes/' + id, { method:'DELETE' });
+    const j = await res.json(); if (!res.ok) return toast(j.erro || 'Erro ao excluir.', 'error');
+    toast('Cliente excluído!'); carregar();
+  }
+  async function salvarAgendamento(e) {
+    e.preventDefault();
+    const id = document.getElementById('ag-id').value;
+    const body = { clienteId: Number(document.getElementById('ag-cliente').value), servico: document.getElementById('ag-servico').value, data: document.getElementById('ag-data').value, horario: document.getElementById('ag-hora').value };
+    if (id) body.status = document.getElementById('ag-status').value;
+    const res = await fetch(id ? '/agendamentos/' + id : '/agendamentos', { method: id ? 'PATCH' : 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const j = await res.json(); if (!res.ok) return toast(j.erro || 'Erro ao salvar.', 'error');
+    fecharModal('modal-agendamento'); toast(id ? 'Agendamento atualizado!' : 'Horário agendado!'); carregar();
+  }
+  async function mudarStatus(id, status) {
+    await fetch('/agendamentos/' + id, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ status }) });
+    toast('Status atualizado!'); carregar();
+  }
+  async function excluirAg(id) {
+    if (!confirm('Excluir agendamento #' + id + '?')) return;
+    await fetch('/agendamentos/' + id, { method:'DELETE' }); toast('Excluído!'); carregar();
+  }
+  carregar();
+</script>
+</body>
+</html>

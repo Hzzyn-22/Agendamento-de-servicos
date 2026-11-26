@@ -1,9 +1,16 @@
+const path = require('path');
 const express = require('express');
 
 const app = express();
 const PORT = process.env.PORT || 3016;
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/site', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'painel.html'));
+});
+
+app.use(express.static('public'));
 
 const clientesRoutes = require('./src/routes/clientes');
 const agendamentosRoutes = require('./src/routes/agendamentos');
@@ -30,6 +37,8 @@ app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).json({ erro: 'Erro interno do servidor' });
 });
+
+
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando na porta ${PORT}`);
