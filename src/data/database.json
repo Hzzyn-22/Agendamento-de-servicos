@@ -79,6 +79,22 @@
       "data": "2026-12-24",
       "horario": "13:00",
       "status": "concluido"
+    },
+    {
+      "id": 7,
+      "clienteId": 1,
+      "servico": "barba",
+      "data": "2026-11-29",
+      "horario": "14:00",
+      "status": "pendente"
+    },
+    {
+      "id": 8,
+      "clienteId": 2,
+      "servico": "Pezinho",
+      "data": "2026-11-31",
+      "horario": "10:00",
+      "status": "pendente"
     }
   ]
 }

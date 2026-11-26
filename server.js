@@ -10,13 +10,8 @@ const PORT = process.env.PORT || 3016;
 app.use(express.json());
 
 // [FLUXO] (Azul): Entradas de dados, requisições (req.body, req.query), leitura de arquivos/APIs.
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('/site', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'painel.html'));
-});
 
 // [FLUXO] (Azul): Entradas de dados, requisições (req.body, req.query), leitura de arquivos/APIs.
-app.use(express.static('public'));
 
 const clientesRoutes = require('./src/routes/clientes');
 const agendamentosRoutes = require('./src/routes/agendamentos');
